@@ -371,10 +371,9 @@ td.kg{font-family:var(--fc);font-weight:600;color:var(--g);}
     </div>
     <div class="rs">
       <div class="rst">Personal</div>
-      <div class="rg c3">
+      <div class="rg">
         <div class="rf"><label>Operador</label><input id="r_operador"></div>
         <div class="rf"><label>Precio (manuscrito)</label><input id="r_precio" class="sc"></div>
-        <div class="rf"><label>Observaciones</label><input id="r_observaciones"></div>
       </div>
     </div>
     <div class="rbtns">
@@ -440,7 +439,6 @@ td.kg{font-family:var(--fc);font-weight:600;color:var(--g);}
     <div class="sec"><div class="sn">4</div><div class="sl">Personal</div><div class="sl2"></div></div>
     <div class="fg c1"><div><label>Operador</label><input type="text" id="m_operador"></div></div>
     <div class="fg c1"><div><label>Precio (manuscrito)</label><input type="number" id="m_precio" placeholder="1400.07"></div></div>
-    <div class="fg c1"><div><label>Observaciones</label><textarea id="m_observaciones" placeholder="Notas adicionales..."></textarea></div></div>
     <button class="bgen" onclick="addEntryMobile()" style="margin-bottom:20px;">⚡ Guardar registro</button>
   </div>
 </div>
@@ -506,10 +504,9 @@ td.kg{font-family:var(--fc);font-weight:600;color:var(--g);}
             <div><label>Volumen M³</label><input type="text" id="volumen"></div>
           </div>
           <div class="sec"><div class="sn">4</div><div class="sl">Personal</div><div class="sl2"></div></div>
-          <div class="fg c3">
+          <div class="fg c2">
             <div><label>Operador</label><input type="text" id="operador"></div>
             <div><label>Precio (manuscrito)</label><input type="number" id="precio" placeholder="1400.07"></div>
-            <div><label>Observaciones</label><input type="text" id="observaciones"></div>
           </div>
           <button class="bgen" onclick="addEntry()">⚡ Guardar registro</button>
         </div>
@@ -539,7 +536,7 @@ td.kg{font-family:var(--fc);font-weight:600;color:var(--g);}
             <th>CLIENTE</th><th>PLACAS</th><th>#ECO</th>
             <th>TIPO UNIDAD</th><th>TIPO RESIDUOS</th>
             <th>BRUTO kg</th><th>TARA kg</th><th>NETO kg</th><th>VOL M³</th>
-            <th>OPERADOR</th><th>PRECIO</th><th>OBS</th><th>ACCIONES</th>
+            <th>OPERADOR</th><th>PRECIO</th><th>ACCIONES</th>
           </tr>
         </thead>
         <tbody id="tb"></tbody>
@@ -620,8 +617,7 @@ Devuelve ÚNICAMENTE este JSON (sin markdown, sin texto extra):
   "neto": "",
   "volumen": "",
   "operador": "",
-  "precio": "",
-  "observaciones": ""
+  "precio": ""
 }
 
 Reglas estrictas de extracción:
@@ -641,6 +637,7 @@ Reglas estrictas de extracción:
 - operador: nombre del operador impreso (ej: "OSCAR STILLER")
 - observaciones: cualquier otro dato relevante no capturado
 - precio: valor numérico escrito a mano al final de la boleta, generalmente en la parte inferior izquierda (ej: "1400.07") — solo el número sin símbolo de moneda
+- cliente: IGNORAR COMPLETAMENTE el texto impreso del campo "Cliente:" aunque diga "4 CLIENTES PARTICULARES" u otro texto preimpreso. Buscar únicamente texto escrito a mano con bolígrafo en la boleta — generalmente es el nombre del conductor o empresa transportista escrito manualmente (ej: "Fud Trailer", "Haller"). Si no hay texto manuscrito claro, dejar vacío.
 - Si un campo no está visible, dejar como ""
 - NO inventes datos — solo extrae lo que claramente está escrito`;
 
@@ -803,7 +800,7 @@ function nextReview(){
   document.getElementById('rimg').src=results[rIdx].url;
   const d=results[rIdx].data;
   const fields=['folio','fecha','hora_entrada','hora_salida','cliente','placas','eco',
-    'tipo_unidad','tipo_residuos','bruto','tara','neto','volumen','operador','precio','observaciones'];
+    'tipo_unidad','tipo_residuos','bruto','tara','neto','volumen','operador','precio'];
   fields.forEach(f=>{
     const el=document.getElementById('r_'+f);
     if(el){el.value=d[f]||'';el.classList.toggle('sc',!!(d[f]));}
@@ -821,7 +818,7 @@ function saveRev(){
     tipo_unidad:rv('r_tipo_unidad'),tipo_residuos:rv('r_tipo_residuos'),
     bruto:rv('r_bruto'),tara:rv('r_tara'),neto:rv('r_neto'),
     volumen:rv('r_volumen'),operador:rv('r_operador'),
-    precio:rv('r_precio'),observaciones:rv('r_observaciones')
+    precio:rv('r_precio')
   };
   records.push(r);scanCount++;save();render();
   toast('✓ Registro guardado','ok');
@@ -837,7 +834,7 @@ function addEntry(){
     cliente:g('cliente'),placas:g('placas'),eco:g('eco'),
     tipo_unidad:g('tipo_unidad'),tipo_residuos:g('tipo_residuos'),
     bruto:g('bruto'),tara:g('tara'),neto:g('neto'),volumen:g('volumen'),
-    operador:g('operador'),precio:g('precio'),observaciones:g('observaciones')};
+    operador:g('operador'),precio:g('precio')};
   records.push(r);save();render();
   toast('✓ Registro guardado','ok');
 }
@@ -849,7 +846,7 @@ function addEntryMobile(){
     cliente:g('m_cliente'),placas:g('m_placas'),eco:g('m_eco'),
     tipo_unidad:g('m_tipo_unidad'),tipo_residuos:g('m_tipo_residuos'),
     bruto:g('m_bruto'),tara:g('m_tara'),neto:g('m_neto'),volumen:g('m_volumen'),
-    operador:g('m_operador'),precio:g('m_precio'),observaciones:g('m_observaciones')};
+    operador:g('m_operador'),precio:g('m_precio')};
   records.push(r);save();render();
   document.getElementById('manualMobOv').style.display='none';
   toast('✓ Registro guardado','ok');
@@ -899,7 +896,6 @@ function render(){
     <td style="font-family:var(--fc)">${r.volumen||'—'}</td>
     <td>${r.operador||'—'}</td>
     <td class="kg">${r.precio?'$'+Number(r.precio).toLocaleString('es-MX',{minimumFractionDigits:2}):'-'}</td>
-    <td class="wc" style="color:var(--mu)">${r.observaciones||'—'}</td>
     <td><div class="ra"><button class="bdl" onclick="delRow(${r.id})">✕</button></div></td>
   </tr>`).join('');
 }
@@ -910,7 +906,7 @@ function buildWorkbook(){
   const headers=['FOLIO','FECHA','HORA ENTRADA','HORA SALIDA','CLIENTE','PLACAS','#ECO',
     'TIPO UNIDAD','TIPO RESIDUOS',
     'BRUTO KG','TARA KG','NETO KG','NETO TON','VOLUMEN M3',
-    'OPERADOR','PRECIO','OBSERVACIONES'];
+    'OPERADOR','PRECIO'];
   const rows=records.map(r=>{
     const neto=Number(r.neto)||0;
     return [r.folio,r.fecha,r.hora_entrada,r.hora_salida,
@@ -920,7 +916,7 @@ function buildWorkbook(){
       r.volumen,r.operador,Number(r.precio)||'',r.observaciones];
   });
   const ws=XLSX.utils.aoa_to_sheet([headers,...rows]);
-  ws['!cols']=[10,12,10,10,22,10,8,14,16,10,10,10,9,9,16,10,24].map(w=>({wch:w}));
+  ws['!cols']=[10,12,10,10,22,10,8,14,16,10,10,10,9,9,16,10].map(w=>({wch:w}));
   const wb=XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb,ws,'Datos');
 
