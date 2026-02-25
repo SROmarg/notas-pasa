@@ -636,11 +636,20 @@ Reglas estrictas de extracción:
 - precio: valor numérico escrito a mano al final de la boleta, generalmente en la parte inferior izquierda (ej: "1400.07") — solo el número sin símbolo de moneda
 - cliente: IGNORAR COMPLETAMENTE el texto impreso del campo "Cliente:" aunque diga "4 CLIENTES PARTICULARES" u otro texto preimpreso. Buscar únicamente texto escrito a mano con bolígrafo en la boleta.
 
-  Reglas de interpretación del texto manuscrito:
-  - Si el texto manuscrito dice "planta 1", "planta 2", "planta 1 y 2", "planta 3" o cualquier combinación de "planta" con número → cliente: "MFG"
-  - Si el texto dice "Fud Trailer", "FuD", "fud trailer" o variaciones → cliente: "FUD TRAILER"
-  - Para cualquier otro texto manuscrito, transcribirlo en MAYÚSCULAS tal como aparece
-  - Si no hay texto manuscrito claro, dejar vacío
+  TABLA DE CONVERSIÓN OBLIGATORIA — aplica SIEMPRE sin excepción:
+  | Texto manuscrito visto       | Valor en cliente |
+  |------------------------------|-----------------|
+  | planta 1                     | MFG             |
+  | planta 2                     | MFG             |
+  | planta 3                     | MFG             |
+  | planta 1 y 2                 | MFG             |
+  | planta 1 y 3                 | MFG             |
+  | cualquier "planta" + número  | MFG             |
+  | Fud Trailer / FuD / fud      | FUD TRAILER     |
+
+  IMPORTANTE: Si ves "planta" seguido de cualquier número o combinación → el valor del campo cliente ES "MFG", no copies el texto literal.
+  Para cualquier otro manuscrito no listado → transcribir en MAYÚSCULAS.
+  Si no hay manuscrito claro → dejar vacío.
 - Si un campo no está visible, dejar como ""
 - NO inventes datos — solo extrae lo que claramente está escrito`;
 
