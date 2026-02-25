@@ -626,8 +626,8 @@ Reglas estrictas de extracción:
 - hora_entrada: hora de la PRIMERA PESADA (ej: "09:02")
 - hora_salida: hora que aparece junto a "PESO DE SALIDA" (ej: "09:35")
 - cliente: el nombre escrito a MANO en la boleta — generalmente es el nombre del conductor o empresa escrito con bolígrafo (ej: "Fud Trailer", "Haller") — NO usar el texto impreso del campo "Cliente:"
-- placas: las placas del vehículo — buscar en el campo "Ruta:" o "Placas:" el valor que parezca placa vehicular (ej: "0L73", "OL73")
-- eco: número económico del vehículo (#ECO)
+- placas: el valor del campo "RUTA" de la boleta — generalmente es un código alfanumérico junto a la palabra "RUTA" (ej: "PW0179B", "OL73") — NO confundir con #ECO
+- eco: el valor del campo "#ECO" de la boleta — número que aparece junto a "# ECO." (ej: "0179") — es diferente al campo RUTA
 - tipo_unidad: tipo de vehículo (ej: "REMOLQUE", "TRAILER", "HELO SECO")
 - tipo_residuos: tipo de residuo (ej: "HIELO SECO", "RSU", "RESIDUOS")
 - bruto: solo dígitos del peso bruto en kg, sin comas ni "kg" (ej: "10440")
