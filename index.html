@@ -346,7 +346,7 @@ td.kg{font-family:var(--fc);font-weight:600;color:var(--g);}
           </div>
           <div class="rg">
             <div class="rf"><label>Cliente (manuscrito)</label><input id="r_cliente" class="sc"></div>
-            <div class="rf"><label>Ruta</label><input id="r_ruta"></div>
+            <div class="rf"><label>Placas ✎</label><input id="r_ruta" placeholder="Ej: PW0179B" style="border-color:rgba(251,191,36,0.6);background:rgba(251,191,36,0.04)"></div>
           </div>
         </div>
         <div class="rs">
@@ -607,7 +607,6 @@ Devuelve ÚNICAMENTE este JSON (sin markdown, sin texto extra):
   "hora_entrada": "",
   "hora_salida": "",
   "cliente": "",
-  "ruta": "",
   "eco": "",
   "tipo_unidad": "",
   "tipo_residuos": "",
@@ -625,7 +624,6 @@ Reglas estrictas de extracción:
 - hora_entrada: hora de la PRIMERA PESADA (ej: "09:02")
 - hora_salida: hora que aparece junto a "PESO DE SALIDA" (ej: "09:35")
 - cliente: el nombre escrito a MANO en la boleta — generalmente es el nombre del conductor o empresa escrito con bolígrafo (ej: "Fud Trailer", "Haller") — NO usar el texto impreso del campo "Cliente:"
-- ruta: valor del campo "RUTA" en la boleta. REGLA CRÍTICA: ruta y eco NUNCA pueden ser el mismo valor. Si estás a punto de poner el mismo número en ruta y en eco, significa que no encontraste el valor de RUTA — en ese caso deja ruta vacío "".
 - eco: valor del campo "# ECO." — solo números (ej: "0179").
 - tipo_unidad: tipo de vehículo (ej: "REMOLQUE", "TRAILER", "HELO SECO")
 - tipo_residuos: tipo de residuo (ej: "HIELO SECO", "RSU", "RESIDUOS")
@@ -636,7 +634,13 @@ Reglas estrictas de extracción:
 - operador: nombre del operador impreso (ej: "OSCAR STILLER")
 - observaciones: cualquier otro dato relevante no capturado
 - precio: valor numérico escrito a mano al final de la boleta, generalmente en la parte inferior izquierda (ej: "1400.07") — solo el número sin símbolo de moneda
-- cliente: IGNORAR COMPLETAMENTE el texto impreso del campo "Cliente:" aunque diga "4 CLIENTES PARTICULARES" u otro texto preimpreso. Buscar únicamente texto escrito a mano con bolígrafo en la boleta — generalmente es el nombre del conductor o empresa transportista escrito manualmente (ej: "Fud Trailer", "Haller"). Si no hay texto manuscrito claro, dejar vacío.
+- cliente: IGNORAR COMPLETAMENTE el texto impreso del campo "Cliente:" aunque diga "4 CLIENTES PARTICULARES" u otro texto preimpreso. Buscar únicamente texto escrito a mano con bolígrafo en la boleta.
+
+  Reglas de interpretación del texto manuscrito:
+  - Si el texto manuscrito dice "planta 1", "planta 2", "planta 1 y 2", "planta 3" o cualquier combinación de "planta" con número → cliente: "MFG"
+  - Si el texto dice "Fud Trailer", "FuD", "fud trailer" o variaciones → cliente: "FUD TRAILER"
+  - Para cualquier otro texto manuscrito, transcribirlo en MAYÚSCULAS tal como aparece
+  - Si no hay texto manuscrito claro, dejar vacío
 - Si un campo no está visible, dejar como ""
 - NO inventes datos — solo extrae lo que claramente está escrito`;
 
@@ -798,8 +802,9 @@ function nextReview(){
   document.getElementById('rmc').textContent=`Boleta ${rIdx+1} de ${results.length} — verifica y corrige si es necesario`;
   document.getElementById('rimg').src=results[rIdx].url;
   const d=results[rIdx].data;
-  const fields=['folio','fecha','hora_entrada','hora_salida','cliente','ruta','eco',
+  const fields=['folio','fecha','hora_entrada','hora_salida','cliente','eco',
     'tipo_unidad','tipo_residuos','bruto','tara','neto','volumen','operador','precio'];
+  // placas (ruta) se captura manualmente — no viene del OCR
   fields.forEach(f=>{
     const el=document.getElementById('r_'+f);
     if(el){el.value=d[f]||'';el.classList.toggle('sc',!!(d[f]));}
