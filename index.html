@@ -597,10 +597,44 @@ function showConfirm(msg,okLabel='Eliminar'){
 }
 
 // ── PROMPT OCR ──────────────────────────────────────────────────
-const PROMPT=`Analiza esta imagen de una boleta de báscula de relleno sanitario / reciclaje de la empresa GEN PASA.
-Extrae TODOS los datos visibles, incluyendo texto manuscrito (especialmente el nombre del cliente).
+const PROMPT=`Eres un experto en lectura de boletas de báscula del relleno sanitario GEN PASA (empresa de reciclaje en México).
 
-Devuelve ÚNICAMENTE un JSON con esta estructura exacta (sin markdown, sin explicaciones):
+Analiza la imagen de esta boleta y extrae los datos con precisión. La boleta tiene este layout específico:
+
+SECCIÓN SUPERIOR (encabezado impreso):
+- "FOLIO:" seguido del número (formato R##### o similar)
+- "CONTADO" puede aparecer como texto
+- Logo GEN PASA con hoja verde en esquina superior derecha
+
+SECCIÓN IZQUIERDA (campos impresos con valores escritos):
+- "Cliente:" — IMPORTANTE: el cliente generalmente está escrito a mano debajo del campo impreso
+- "Transportista:" — nombre de la empresa transportista
+- "Tipo unidad:" — tipo de vehículo (ej: HELO SECO, REMOLQUE, TRAILER, etc.)
+- "Tipo residuos:" — tipo de residuo (ej: RESIDUOS, BIOSOULTA, RSU, etc.)
+- "Procedencia:" — origen del residuo (ej: SUMINREGIO, nombre de empresa)
+- "Basculista:" — nombre del operador de báscula
+- "Promotora Ambiental de la Laguna S:" o similar — nombre de promotora
+
+SECCIÓN DERECHA (campos con valores):
+- "Ruta:" seguido de número/código (ej: OL73)
+- "Placas:" — placas del vehículo
+- "#ECO:" — número económico del vehículo
+- "Operador:" — nombre del operador (ej: OSCAR SILER)
+
+SECCIÓN DE RECUADRO (peso e información de báscula):
+- "PRIMERA PESADA" o "SEGUNDA PESADA" como tipo
+- Fecha y hora (ej: 25/02/2026 09:02)
+- "BRUTO:" — peso bruto en kg (ej: 10,440 kg)
+- "PESO DE SALIDA:" — esto es la TARA (ej: 8,560 kg)
+- "NETO:" — peso neto calculado (ej: 1,880 kg) — a veces escrito con "±" al inicio
+- "VOL. M³:" — volumen en metros cúbicos
+
+TEXTO MANUSCRITO (escrito a mano con bolígrafo):
+- El nombre del conductor/operador del vehículo suele estar escrito a mano (ej: "Fud Trailer", "Haller")
+- CF: número escrito a mano precedido de "CF:"
+- Fax y otros datos de contacto pueden estar escritos a mano
+
+Devuelve ÚNICAMENTE este JSON (sin markdown, sin texto extra):
 {
   "folio": "",
   "fecha": "",
@@ -626,18 +660,20 @@ Devuelve ÚNICAMENTE un JSON con esta estructura exacta (sin markdown, sin expli
   "observaciones": ""
 }
 
-Instrucciones:
-- folio: número de folio (ej: R82742)
-- fecha: fecha en formato DD/MM/YYYY
-- hora: hora de la primera pesada
-- cliente: nombre del cliente (puede estar escrito a mano)
-- bruto, tara, neto: solo el número en kg, sin unidades
-- volumen: valor numérico del volumen en M³
-- tipo_pesada: ej "PRIMERA PESADA"
-- conductor: nombre del conductor si aparece escrito
-- cf: número o referencia CF si aparece
-- Si un campo no está visible o legible, dejarlo como cadena vacía ""
-- NO inventes datos, solo extrae lo que claramente dice la boleta`;
+Reglas estrictas:
+- folio: solo el número/código (ej: "R82742")
+- fecha: formato DD/MM/YYYY
+- hora: solo la hora (ej: "09:02")
+- cliente: el nombre escrito a mano en el campo Cliente — NO confundir con transportista ni promotora
+- bruto: solo dígitos del peso bruto en kg, sin comas ni "kg" (ej: "10440")
+- tara: el valor de "PESO DE SALIDA" en kg, solo dígitos (ej: "8560")
+- neto: solo dígitos del peso neto, sin "±" ni "kg" (ej: "1880")
+- conductor: nombre manuscrito del conductor del vehículo si aparece
+- promotora: el nombre de la promotora ambiental si aparece
+- tipo_unidad: el tipo de vehículo (ej: "HELO SECO", "REMOLQUE")
+- tipo_residuos: el tipo de residuo (ej: "RESIDUOS", "RSU", "BIOSOULTA")
+- Si un campo no está visible, dejar como ""
+- NO inventes datos — solo extrae lo que claramente está escrito`;
 
 // ── STORAGE ─────────────────────────────────────────────────────
 function save(){
