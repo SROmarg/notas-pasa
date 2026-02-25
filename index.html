@@ -338,16 +338,15 @@ td.kg{font-family:var(--fc);font-weight:600;color:var(--g);}
           <div class="rg c3">
             <div class="rf"><label>Folio</label><input id="r_folio" class="sc"></div>
             <div class="rf"><label>Fecha</label><input id="r_fecha"></div>
-            <div class="rf"><label>Hora</label><input id="r_hora"></div>
+            <div class="rf"><label>#ECO</label><input id="r_eco"></div>
           </div>
           <div class="rg">
-            <div class="rf"><label>Cliente</label><input id="r_cliente" class="sc"></div>
-            <div class="rf"><label>Transportista</label><input id="r_transportista"></div>
+            <div class="rf"><label>Hora Entrada</label><input id="r_hora_entrada"></div>
+            <div class="rf"><label>Hora Salida</label><input id="r_hora_salida"></div>
           </div>
-          <div class="rg c3">
+          <div class="rg">
+            <div class="rf"><label>Cliente (manuscrito)</label><input id="r_cliente" class="sc"></div>
             <div class="rf"><label>Placas</label><input id="r_placas"></div>
-            <div class="rf"><label>Ruta</label><input id="r_ruta"></div>
-            <div class="rf"><label>#ECO</label><input id="r_eco"></div>
           </div>
         </div>
         <div class="rs">
@@ -355,10 +354,6 @@ td.kg{font-family:var(--fc);font-weight:600;color:var(--g);}
           <div class="rg">
             <div class="rf"><label>Tipo Unidad</label><input id="r_tipo_unidad"></div>
             <div class="rf"><label>Tipo Residuos</label><input id="r_tipo_residuos"></div>
-          </div>
-          <div class="rg">
-            <div class="rf"><label>Procedencia</label><input id="r_procedencia"></div>
-            <div class="rf"><label>Promotora</label><input id="r_promotora"></div>
           </div>
         </div>
       </div>
@@ -370,22 +365,15 @@ td.kg{font-family:var(--fc);font-weight:600;color:var(--g);}
         <div class="rf"><label>Tara (kg)</label><input id="r_tara" type="number"></div>
         <div class="rf"><label>Neto (kg)</label><input id="r_neto" type="number"></div>
       </div>
-      <div class="rg">
+      <div class="rg c1">
         <div class="rf"><label>Volumen M³</label><input id="r_volumen"></div>
-        <div class="rf"><label>Tipo de Pesada</label><input id="r_tipo_pesada"></div>
       </div>
     </div>
     <div class="rs">
       <div class="rst">Personal</div>
-      <div class="rg">
-        <div class="rf"><label>Basculista</label><input id="r_basculista"></div>
+      <div class="rg c3">
         <div class="rf"><label>Operador</label><input id="r_operador"></div>
-      </div>
-      <div class="rg">
-        <div class="rf"><label>Conductor</label><input id="r_conductor"></div>
-        <div class="rf"><label>CF / Referencia</label><input id="r_cf"></div>
-      </div>
-      <div class="rg c1">
+        <div class="rf"><label>Precio (manuscrito)</label><input id="r_precio" class="sc"></div>
         <div class="rf"><label>Observaciones</label><input id="r_observaciones"></div>
       </div>
     </div>
@@ -436,28 +424,22 @@ td.kg{font-family:var(--fc);font-weight:600;color:var(--g);}
     <div class="sec" style="margin-top:0;"><div class="sn">1</div><div class="sl">Encabezado</div><div class="sl2"></div></div>
     <div class="fg c1"><div><label>Folio</label><input type="text" id="m_folio" placeholder="R82742"></div></div>
     <div class="fg c1"><div><label>Fecha</label><input type="text" id="m_fecha" placeholder="25/02/2026"></div></div>
-    <div class="fg c1"><div><label>Hora</label><input type="text" id="m_hora" placeholder="09:02"></div></div>
-    <div class="fg c1"><div><label>Cliente</label><input type="text" id="m_cliente" placeholder="Nombre del cliente"></div></div>
-    <div class="fg c1"><div><label>Transportista</label><input type="text" id="m_transportista"></div></div>
-    <div class="fg c1"><div><label>Placas</label><input type="text" id="m_placas"></div></div>
-    <div class="fg c1"><div><label>Ruta</label><input type="text" id="m_ruta"></div></div>
     <div class="fg c1"><div><label>#ECO</label><input type="text" id="m_eco"></div></div>
+    <div class="fg c1"><div><label>Hora Entrada</label><input type="text" id="m_hora_entrada" placeholder="09:02"></div></div>
+    <div class="fg c1"><div><label>Hora Salida</label><input type="text" id="m_hora_salida" placeholder="09:35"></div></div>
+    <div class="fg c1"><div><label>Cliente (manuscrito)</label><input type="text" id="m_cliente" placeholder="Fud Trailer"></div></div>
+    <div class="fg c1"><div><label>Placas</label><input type="text" id="m_placas"></div></div>
     <div class="sec"><div class="sn">2</div><div class="sl">Clasificación</div><div class="sl2"></div></div>
-    <div class="fg c1"><div><label>Tipo Unidad</label><input type="text" id="m_tipo_unidad"></div></div>
+    <div class="fg c1"><div><label>Tipo Unidad</label><input type="text" id="m_tipo_unidad" placeholder="REMOLQUE"></div></div>
     <div class="fg c1"><div><label>Tipo Residuos</label><input type="text" id="m_tipo_residuos"></div></div>
-    <div class="fg c1"><div><label>Procedencia</label><input type="text" id="m_procedencia"></div></div>
-    <div class="fg c1"><div><label>Promotora</label><input type="text" id="m_promotora"></div></div>
     <div class="sec"><div class="sn">3</div><div class="sl">Pesaje</div><div class="sl2"></div></div>
     <div class="fg c1"><div><label>Bruto (kg)</label><input type="number" id="m_bruto"></div></div>
     <div class="fg c1"><div><label>Tara (kg)</label><input type="number" id="m_tara"></div></div>
     <div class="fg c1"><div><label>Neto (kg)</label><input type="number" id="m_neto"></div></div>
     <div class="fg c1"><div><label>Volumen M³</label><input type="text" id="m_volumen"></div></div>
-    <div class="fg c1"><div><label>Tipo Pesada</label><input type="text" id="m_tipo_pesada" placeholder="PRIMERA PESADA"></div></div>
     <div class="sec"><div class="sn">4</div><div class="sl">Personal</div><div class="sl2"></div></div>
-    <div class="fg c1"><div><label>Basculista</label><input type="text" id="m_basculista"></div></div>
     <div class="fg c1"><div><label>Operador</label><input type="text" id="m_operador"></div></div>
-    <div class="fg c1"><div><label>Conductor</label><input type="text" id="m_conductor"></div></div>
-    <div class="fg c1"><div><label>CF / Referencia</label><input type="text" id="m_cf"></div></div>
+    <div class="fg c1"><div><label>Precio (manuscrito)</label><input type="number" id="m_precio" placeholder="1400.07"></div></div>
     <div class="fg c1"><div><label>Observaciones</label><textarea id="m_observaciones" placeholder="Notas adicionales..."></textarea></div></div>
     <button class="bgen" onclick="addEntryMobile()" style="margin-bottom:20px;">⚡ Guardar registro</button>
   </div>
@@ -499,25 +481,20 @@ td.kg{font-family:var(--fc);font-weight:600;color:var(--g);}
           <div class="fg c3">
             <div><label>Folio</label><input type="text" id="folio" placeholder="R82742"></div>
             <div><label>Fecha</label><input type="text" id="fecha" placeholder="25/02/2026"></div>
-            <div><label>Hora</label><input type="text" id="hora" placeholder="09:02"></div>
+            <div><label>#ECO</label><input type="text" id="eco"></div>
           </div>
           <div class="fg c2">
-            <div><label>Cliente</label><input type="text" id="cliente" placeholder="Nombre del cliente"></div>
-            <div><label>Transportista</label><input type="text" id="transportista"></div>
+            <div><label>Hora Entrada</label><input type="text" id="hora_entrada" placeholder="09:02"></div>
+            <div><label>Hora Salida</label><input type="text" id="hora_salida" placeholder="09:35"></div>
           </div>
-          <div class="fg c3">
+          <div class="fg c2">
+            <div><label>Cliente (manuscrito)</label><input type="text" id="cliente" placeholder="Fud Trailer"></div>
             <div><label>Placas</label><input type="text" id="placas"></div>
-            <div><label>Ruta</label><input type="text" id="ruta"></div>
-            <div><label>#ECO</label><input type="text" id="eco"></div>
           </div>
           <div class="sec"><div class="sn">2</div><div class="sl">Clasificación</div><div class="sl2"></div></div>
           <div class="fg c2">
-            <div><label>Tipo Unidad</label><input type="text" id="tipo_unidad"></div>
+            <div><label>Tipo Unidad</label><input type="text" id="tipo_unidad" placeholder="REMOLQUE"></div>
             <div><label>Tipo Residuos</label><input type="text" id="tipo_residuos"></div>
-          </div>
-          <div class="fg c2">
-            <div><label>Procedencia</label><input type="text" id="procedencia"></div>
-            <div><label>Promotora</label><input type="text" id="promotora"></div>
           </div>
           <div class="sec"><div class="sn">3</div><div class="sl">Pesaje</div><div class="sl2"></div></div>
           <div class="fg c3">
@@ -525,20 +502,15 @@ td.kg{font-family:var(--fc);font-weight:600;color:var(--g);}
             <div><label>Tara (kg)</label><input type="number" id="tara"></div>
             <div><label>Neto (kg)</label><input type="number" id="neto"></div>
           </div>
-          <div class="fg c2">
+          <div class="fg c1">
             <div><label>Volumen M³</label><input type="text" id="volumen"></div>
-            <div><label>Tipo Pesada</label><input type="text" id="tipo_pesada" placeholder="PRIMERA PESADA"></div>
           </div>
           <div class="sec"><div class="sn">4</div><div class="sl">Personal</div><div class="sl2"></div></div>
-          <div class="fg c2">
-            <div><label>Basculista</label><input type="text" id="basculista"></div>
+          <div class="fg c3">
             <div><label>Operador</label><input type="text" id="operador"></div>
+            <div><label>Precio (manuscrito)</label><input type="number" id="precio" placeholder="1400.07"></div>
+            <div><label>Observaciones</label><input type="text" id="observaciones"></div>
           </div>
-          <div class="fg c2">
-            <div><label>Conductor</label><input type="text" id="conductor"></div>
-            <div><label>CF / Referencia</label><input type="text" id="cf"></div>
-          </div>
-          <div class="fg c1"><div><label>Observaciones</label><textarea id="observaciones" placeholder="Notas adicionales..."></textarea></div></div>
           <button class="bgen" onclick="addEntry()">⚡ Guardar registro</button>
         </div>
       </div>
@@ -563,12 +535,11 @@ td.kg{font-family:var(--fc);font-weight:600;color:var(--g);}
       <table>
         <thead>
           <tr>
-            <th>#</th><th>FOLIO</th><th>FECHA</th><th>HORA</th><th>CLIENTE</th>
-            <th>TRANSPORTISTA</th><th>PLACAS</th><th>RUTA</th><th>#ECO</th>
-            <th>TIPO UNIDAD</th><th>TIPO RESIDUOS</th><th>PROCEDENCIA</th>
+            <th>#</th><th>FOLIO</th><th>FECHA</th><th>H. ENTRADA</th><th>H. SALIDA</th>
+            <th>CLIENTE</th><th>PLACAS</th><th>#ECO</th>
+            <th>TIPO UNIDAD</th><th>TIPO RESIDUOS</th>
             <th>BRUTO kg</th><th>TARA kg</th><th>NETO kg</th><th>VOL M³</th>
-            <th>TIPO PESADA</th><th>BASCULISTA</th><th>OPERADOR</th>
-            <th>CONDUCTOR</th><th>CF</th><th>OBS</th><th>ACCIONES</th>
+            <th>OPERADOR</th><th>PRECIO</th><th>OBS</th><th>ACCIONES</th>
           </tr>
         </thead>
         <tbody id="tb"></tbody>
@@ -608,7 +579,6 @@ SECCIÓN SUPERIOR (encabezado impreso):
 
 SECCIÓN IZQUIERDA (campos impresos con valores escritos):
 - "Cliente:" — IMPORTANTE: el cliente generalmente está escrito a mano debajo del campo impreso
-- "Transportista:" — nombre de la empresa transportista
 - "Tipo unidad:" — tipo de vehículo (ej: HELO SECO, REMOLQUE, TRAILER, etc.)
 - "Tipo residuos:" — tipo de residuo (ej: RESIDUOS, BIOSOULTA, RSU, etc.)
 - "Procedencia:" — origen del residuo (ej: SUMINREGIO, nombre de empresa)
@@ -638,40 +608,39 @@ Devuelve ÚNICAMENTE este JSON (sin markdown, sin texto extra):
 {
   "folio": "",
   "fecha": "",
-  "hora": "",
+  "hora_entrada": "",
+  "hora_salida": "",
   "cliente": "",
-  "transportista": "",
   "placas": "",
-  "ruta": "",
   "eco": "",
   "tipo_unidad": "",
   "tipo_residuos": "",
-  "procedencia": "",
-  "promotora": "",
   "bruto": "",
   "tara": "",
   "neto": "",
   "volumen": "",
-  "tipo_pesada": "",
-  "basculista": "",
   "operador": "",
-  "conductor": "",
-  "cf": "",
+  "precio": "",
   "observaciones": ""
 }
 
-Reglas estrictas:
+Reglas estrictas de extracción:
 - folio: solo el número/código (ej: "R82742")
 - fecha: formato DD/MM/YYYY
-- hora: solo la hora (ej: "09:02")
-- cliente: el nombre escrito a mano en el campo Cliente — NO confundir con transportista ni promotora
+- hora_entrada: hora de la PRIMERA PESADA (ej: "09:02")
+- hora_salida: hora que aparece junto a "PESO DE SALIDA" (ej: "09:35")
+- cliente: el nombre escrito a MANO en la boleta — generalmente es el nombre del conductor o empresa escrito con bolígrafo (ej: "Fud Trailer", "Haller") — NO usar el texto impreso del campo "Cliente:"
+- placas: las placas del vehículo — buscar en el campo "Ruta:" o "Placas:" el valor que parezca placa vehicular (ej: "0L73", "OL73")
+- eco: número económico del vehículo (#ECO)
+- tipo_unidad: tipo de vehículo (ej: "REMOLQUE", "TRAILER", "HELO SECO")
+- tipo_residuos: tipo de residuo (ej: "HIELO SECO", "RSU", "RESIDUOS")
 - bruto: solo dígitos del peso bruto en kg, sin comas ni "kg" (ej: "10440")
 - tara: el valor de "PESO DE SALIDA" en kg, solo dígitos (ej: "8560")
 - neto: solo dígitos del peso neto, sin "±" ni "kg" (ej: "1880")
-- conductor: nombre manuscrito del conductor del vehículo si aparece
-- promotora: el nombre de la promotora ambiental si aparece
-- tipo_unidad: el tipo de vehículo (ej: "HELO SECO", "REMOLQUE")
-- tipo_residuos: el tipo de residuo (ej: "RESIDUOS", "RSU", "BIOSOULTA")
+- volumen: valor numérico del volumen M³ (ej: "1.88")
+- operador: nombre del operador impreso (ej: "OSCAR STILLER")
+- observaciones: cualquier otro dato relevante no capturado
+- precio: valor numérico escrito a mano al final de la boleta, generalmente en la parte inferior izquierda (ej: "1400.07") — solo el número sin símbolo de moneda
 - Si un campo no está visible, dejar como ""
 - NO inventes datos — solo extrae lo que claramente está escrito`;
 
@@ -833,9 +802,8 @@ function nextReview(){
   document.getElementById('rmc').textContent=`Boleta ${rIdx+1} de ${results.length} — verifica y corrige si es necesario`;
   document.getElementById('rimg').src=results[rIdx].url;
   const d=results[rIdx].data;
-  const fields=['folio','fecha','hora','cliente','transportista','placas','ruta','eco',
-    'tipo_unidad','tipo_residuos','procedencia','promotora','bruto','tara','neto',
-    'volumen','tipo_pesada','basculista','operador','conductor','cf','observaciones'];
+  const fields=['folio','fecha','hora_entrada','hora_salida','cliente','placas','eco',
+    'tipo_unidad','tipo_residuos','bruto','tara','neto','volumen','operador','precio','observaciones'];
   fields.forEach(f=>{
     const el=document.getElementById('r_'+f);
     if(el){el.value=d[f]||'';el.classList.toggle('sc',!!(d[f]));}
@@ -847,15 +815,13 @@ function saveRev(){
   const rv=id=>document.getElementById(id)?.value.trim()||'';
   const r={
     id:Date.now(),
-    folio:rv('r_folio'),fecha:rv('r_fecha'),hora:rv('r_hora'),
-    cliente:rv('r_cliente'),transportista:rv('r_transportista'),
-    placas:rv('r_placas'),ruta:rv('r_ruta'),eco:rv('r_eco'),
+    folio:rv('r_folio'),fecha:rv('r_fecha'),
+    hora_entrada:rv('r_hora_entrada'),hora_salida:rv('r_hora_salida'),
+    cliente:rv('r_cliente'),placas:rv('r_placas'),eco:rv('r_eco'),
     tipo_unidad:rv('r_tipo_unidad'),tipo_residuos:rv('r_tipo_residuos'),
-    procedencia:rv('r_procedencia'),promotora:rv('r_promotora'),
     bruto:rv('r_bruto'),tara:rv('r_tara'),neto:rv('r_neto'),
-    volumen:rv('r_volumen'),tipo_pesada:rv('r_tipo_pesada'),
-    basculista:rv('r_basculista'),operador:rv('r_operador'),
-    conductor:rv('r_conductor'),cf:rv('r_cf'),observaciones:rv('r_observaciones')
+    volumen:rv('r_volumen'),operador:rv('r_operador'),
+    precio:rv('r_precio'),observaciones:rv('r_observaciones')
   };
   records.push(r);scanCount++;save();render();
   toast('✓ Registro guardado','ok');
@@ -866,26 +832,24 @@ function skipRev(){rIdx++;nextReview();}
 // ── MANUAL ENTRY ────────────────────────────────────────────────
 function addEntry(){
   const g=id=>document.getElementById(id)?.value.trim()||'';
-  const r={id:Date.now(),folio:g('folio'),fecha:g('fecha'),hora:g('hora'),
-    cliente:g('cliente'),transportista:g('transportista'),placas:g('placas'),
-    ruta:g('ruta'),eco:g('eco'),tipo_unidad:g('tipo_unidad'),
-    tipo_residuos:g('tipo_residuos'),procedencia:g('procedencia'),promotora:g('promotora'),
+  const r={id:Date.now(),folio:g('folio'),fecha:g('fecha'),
+    hora_entrada:g('hora_entrada'),hora_salida:g('hora_salida'),
+    cliente:g('cliente'),placas:g('placas'),eco:g('eco'),
+    tipo_unidad:g('tipo_unidad'),tipo_residuos:g('tipo_residuos'),
     bruto:g('bruto'),tara:g('tara'),neto:g('neto'),volumen:g('volumen'),
-    tipo_pesada:g('tipo_pesada'),basculista:g('basculista'),operador:g('operador'),
-    conductor:g('conductor'),cf:g('cf'),observaciones:g('observaciones')};
+    operador:g('operador'),precio:g('precio'),observaciones:g('observaciones')};
   records.push(r);save();render();
   toast('✓ Registro guardado','ok');
 }
 
 function addEntryMobile(){
   const g=id=>document.getElementById(id)?.value.trim()||'';
-  const r={id:Date.now(),folio:g('m_folio'),fecha:g('m_fecha'),hora:g('m_hora'),
-    cliente:g('m_cliente'),transportista:g('m_transportista'),placas:g('m_placas'),
-    ruta:g('m_ruta'),eco:g('m_eco'),tipo_unidad:g('m_tipo_unidad'),
-    tipo_residuos:g('m_tipo_residuos'),procedencia:g('m_procedencia'),promotora:g('m_promotora'),
+  const r={id:Date.now(),folio:g('m_folio'),fecha:g('m_fecha'),
+    hora_entrada:g('m_hora_entrada'),hora_salida:g('m_hora_salida'),
+    cliente:g('m_cliente'),placas:g('m_placas'),eco:g('m_eco'),
+    tipo_unidad:g('m_tipo_unidad'),tipo_residuos:g('m_tipo_residuos'),
     bruto:g('m_bruto'),tara:g('m_tara'),neto:g('m_neto'),volumen:g('m_volumen'),
-    tipo_pesada:g('m_tipo_pesada'),basculista:g('m_basculista'),operador:g('m_operador'),
-    conductor:g('m_conductor'),cf:g('m_cf'),observaciones:g('m_observaciones')};
+    operador:g('m_operador'),precio:g('m_precio'),observaciones:g('m_observaciones')};
   records.push(r);save();render();
   document.getElementById('manualMobOv').style.display='none';
   toast('✓ Registro guardado','ok');
@@ -921,25 +885,20 @@ function render(){
   tb.innerHTML=records.map((r,i)=>`<tr ${i>=records.length-1?'class="nr"':''}>
     <td class="num">${i+1}</td>
     <td><span class="chip">${r.folio||'—'}</span></td>
-    <td>${r.fecha||'—'}</td>
-    <td style="font-family:var(--fc)">${r.hora||'—'}</td>
+    <td style="font-family:var(--fc)">${r.fecha||'—'}</td>
+    <td style="font-family:var(--fc)">${r.hora_entrada||'—'}</td>
+    <td style="font-family:var(--fc)">${r.hora_salida||'—'}</td>
     <td class="wc"><strong>${r.cliente||'—'}</strong></td>
-    <td class="wc">${r.transportista||'—'}</td>
     <td style="font-family:var(--fc)">${r.placas||'—'}</td>
-    <td>${r.ruta||'—'}</td>
-    <td>${r.eco||'—'}</td>
+    <td style="font-family:var(--fc)">${r.eco||'—'}</td>
     <td>${r.tipo_unidad||'—'}</td>
     <td class="wc">${r.tipo_residuos||'—'}</td>
-    <td>${r.procedencia||'—'}</td>
     <td class="kg">${r.bruto?Number(r.bruto).toLocaleString('es-MX'):'-'}</td>
     <td class="kg" style="color:var(--mu)">${r.tara?Number(r.tara).toLocaleString('es-MX'):'-'}</td>
     <td class="kg">${r.neto?Number(r.neto).toLocaleString('es-MX'):'-'}</td>
     <td style="font-family:var(--fc)">${r.volumen||'—'}</td>
-    <td>${r.tipo_pesada||'—'}</td>
-    <td>${r.basculista||'—'}</td>
     <td>${r.operador||'—'}</td>
-    <td>${r.conductor||'—'}</td>
-    <td style="font-family:var(--fc)">${r.cf||'—'}</td>
+    <td class="kg">${r.precio?'$'+Number(r.precio).toLocaleString('es-MX',{minimumFractionDigits:2}):'-'}</td>
     <td class="wc" style="color:var(--mu)">${r.observaciones||'—'}</td>
     <td><div class="ra"><button class="bdl" onclick="delRow(${r.id})">✕</button></div></td>
   </tr>`).join('');
@@ -947,16 +906,16 @@ function render(){
 
 // ── EXCEL ────────────────────────────────────────────────────────
 function buildWorkbook(){
-  const headers=['FOLIO','FECHA','HORA','CLIENTE','TRANSPORTISTA','PLACAS','RUTA','#ECO',
-    'TIPO UNIDAD','TIPO RESIDUOS','PROCEDENCIA','PROMOTORA',
-    'BRUTO KG','TARA KG','NETO KG','VOLUMEN M3','TIPO PESADA',
-    'BASCULISTA','OPERADOR','CONDUCTOR','CF','OBSERVACIONES'];
-  const rows=records.map(r=>[r.folio,r.fecha,r.hora,r.cliente,r.transportista,r.placas,
-    r.ruta,r.eco,r.tipo_unidad,r.tipo_residuos,r.procedencia,r.promotora,
+  const headers=['FOLIO','FECHA','HORA ENTRADA','HORA SALIDA','CLIENTE','PLACAS','#ECO',
+    'TIPO UNIDAD','TIPO RESIDUOS',
+    'BRUTO KG','TARA KG','NETO KG','VOLUMEN M3',
+    'OPERADOR','PRECIO','OBSERVACIONES'];
+  const rows=records.map(r=>[r.folio,r.fecha,r.hora_entrada,r.hora_salida,
+    r.cliente,r.placas,r.eco,r.tipo_unidad,r.tipo_residuos,
     Number(r.bruto)||'',Number(r.tara)||'',Number(r.neto)||'',
-    r.volumen,r.tipo_pesada,r.basculista,r.operador,r.conductor,r.cf,r.observaciones]);
+    r.volumen,r.operador,Number(r.precio)||'',r.observaciones]);
   const ws=XLSX.utils.aoa_to_sheet([headers,...rows]);
-  ws['!cols']=[10,12,8,20,20,10,8,8,12,16,14,16,10,10,10,8,14,14,14,18,10,24].map(w=>({wch:w}));
+  ws['!cols']=[10,12,10,10,22,10,8,14,16,10,10,10,8,16,10,24].map(w=>({wch:w}));
   const wb=XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb,ws,'Notas Báscula');
   return wb;
