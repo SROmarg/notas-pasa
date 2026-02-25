@@ -583,9 +583,8 @@ SECCIÓN IZQUIERDA (campos impresos con valores escritos):
 - "Promotora Ambiental de la Laguna S:" o similar — nombre de promotora
 
 SECCIÓN DERECHA (campos con valores):
-- "Ruta:" seguido de número/código (ej: OL73)
-- "Placas:" — placas del vehículo
-- "#ECO:" — número económico del vehículo
+- "RUTA" seguido de un código alfanumérico — este es el dato que va en PLACAS (ej: "PW0179B") — aparece en la parte superior derecha
+- "# ECO." seguido de un número — este es el #ECO (ej: "0179") — aparece debajo de RUTA
 - "Operador:" — nombre del operador (ej: OSCAR SILER)
 
 SECCIÓN DE RECUADRO (peso e información de báscula):
@@ -626,8 +625,8 @@ Reglas estrictas de extracción:
 - hora_entrada: hora de la PRIMERA PESADA (ej: "09:02")
 - hora_salida: hora que aparece junto a "PESO DE SALIDA" (ej: "09:35")
 - cliente: el nombre escrito a MANO en la boleta — generalmente es el nombre del conductor o empresa escrito con bolígrafo (ej: "Fud Trailer", "Haller") — NO usar el texto impreso del campo "Cliente:"
-- placas: el valor del campo "RUTA" de la boleta — generalmente es un código alfanumérico junto a la palabra "RUTA" (ej: "PW0179B", "OL73") — NO confundir con #ECO
-- eco: el valor del campo "#ECO" de la boleta — número que aparece junto a "# ECO." (ej: "0179") — es diferente al campo RUTA
+- placas: buscar específicamente el texto que aparece junto a la palabra "RUTA" en la boleta — este valor incluye letras y números como "PW0179B", "PW0179", etc. — está en la parte superior derecha de la boleta, en la misma línea o cerca de donde dice "RUTA". Es DIFERENTE al #ECO que es solo número.
+- eco: buscar específicamente el texto junto a "# ECO." — generalmente es solo números (ej: "0179") — está debajo del campo RUTA
 - tipo_unidad: tipo de vehículo (ej: "REMOLQUE", "TRAILER", "HELO SECO")
 - tipo_residuos: tipo de residuo (ej: "HIELO SECO", "RSU", "RESIDUOS")
 - bruto: solo dígitos del peso bruto en kg, sin comas ni "kg" (ej: "10440")
