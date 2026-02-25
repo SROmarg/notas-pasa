@@ -346,7 +346,7 @@ td.kg{font-family:var(--fc);font-weight:600;color:var(--g);}
           </div>
           <div class="rg">
             <div class="rf"><label>Cliente (manuscrito)</label><input id="r_cliente" class="sc"></div>
-            <div class="rf"><label>Placas</label><input id="r_placas"></div>
+            <div class="rf"><label>Ruta</label><input id="r_ruta"></div>
           </div>
         </div>
         <div class="rs">
@@ -427,7 +427,7 @@ td.kg{font-family:var(--fc);font-weight:600;color:var(--g);}
     <div class="fg c1"><div><label>Hora Entrada</label><input type="text" id="m_hora_entrada" placeholder="09:02"></div></div>
     <div class="fg c1"><div><label>Hora Salida</label><input type="text" id="m_hora_salida" placeholder="09:35"></div></div>
     <div class="fg c1"><div><label>Cliente (manuscrito)</label><input type="text" id="m_cliente" placeholder="Fud Trailer"></div></div>
-    <div class="fg c1"><div><label>Placas</label><input type="text" id="m_placas"></div></div>
+    <div class="fg c1"><div><label>Ruta</label><input type="text" id="m_ruta"></div></div>
     <div class="sec"><div class="sn">2</div><div class="sl">Clasificación</div><div class="sl2"></div></div>
     <div class="fg c1"><div><label>Tipo Unidad</label><input type="text" id="m_tipo_unidad" placeholder="REMOLQUE"></div></div>
     <div class="fg c1"><div><label>Tipo Residuos</label><input type="text" id="m_tipo_residuos"></div></div>
@@ -487,7 +487,7 @@ td.kg{font-family:var(--fc);font-weight:600;color:var(--g);}
           </div>
           <div class="fg c2">
             <div><label>Cliente (manuscrito)</label><input type="text" id="cliente" placeholder="Fud Trailer"></div>
-            <div><label>Placas</label><input type="text" id="placas"></div>
+            <div><label>Ruta</label><input type="text" id="ruta"></div>
           </div>
           <div class="sec"><div class="sn">2</div><div class="sl">Clasificación</div><div class="sl2"></div></div>
           <div class="fg c2">
@@ -533,7 +533,7 @@ td.kg{font-family:var(--fc);font-weight:600;color:var(--g);}
         <thead>
           <tr>
             <th>#</th><th>FOLIO</th><th>FECHA</th><th>H. ENTRADA</th><th>H. SALIDA</th>
-            <th>CLIENTE</th><th>PLACAS</th><th>#ECO</th>
+            <th>CLIENTE</th><th>RUTA</th><th>#ECO</th>
             <th>TIPO UNIDAD</th><th>TIPO RESIDUOS</th>
             <th>BRUTO kg</th><th>TARA kg</th><th>NETO kg</th><th>VOL M³</th>
             <th>OPERADOR</th><th>PRECIO</th><th>ACCIONES</th>
@@ -583,8 +583,8 @@ SECCIÓN IZQUIERDA (campos impresos con valores escritos):
 - "Promotora Ambiental de la Laguna S:" o similar — nombre de promotora
 
 SECCIÓN DERECHA (campos con valores):
-- "RUTA" seguido de un código alfanumérico — este es el dato que va en PLACAS (ej: "PW0179B") — aparece en la parte superior derecha
-- "# ECO." seguido de un número — este es el #ECO (ej: "0179") — aparece debajo de RUTA
+- "RUTA" seguido de código alfanumérico (ej: "PW0179B") — parte superior derecha
+- "# ECO." seguido de número (ej: "0179") — debajo de RUTA
 - "Operador:" — nombre del operador (ej: OSCAR SILER)
 
 SECCIÓN DE RECUADRO (peso e información de báscula):
@@ -607,7 +607,7 @@ Devuelve ÚNICAMENTE este JSON (sin markdown, sin texto extra):
   "hora_entrada": "",
   "hora_salida": "",
   "cliente": "",
-  "placas": "",
+  "ruta": "",
   "eco": "",
   "tipo_unidad": "",
   "tipo_residuos": "",
@@ -625,8 +625,8 @@ Reglas estrictas de extracción:
 - hora_entrada: hora de la PRIMERA PESADA (ej: "09:02")
 - hora_salida: hora que aparece junto a "PESO DE SALIDA" (ej: "09:35")
 - cliente: el nombre escrito a MANO en la boleta — generalmente es el nombre del conductor o empresa escrito con bolígrafo (ej: "Fud Trailer", "Haller") — NO usar el texto impreso del campo "Cliente:"
-- placas: buscar específicamente el texto que aparece junto a la palabra "RUTA" en la boleta — este valor incluye letras y números como "PW0179B", "PW0179", etc. — está en la parte superior derecha de la boleta, en la misma línea o cerca de donde dice "RUTA". Es DIFERENTE al #ECO que es solo número.
-- eco: buscar específicamente el texto junto a "# ECO." — generalmente es solo números (ej: "0179") — está debajo del campo RUTA
+- ruta: el valor exacto del campo "RUTA" en la boleta (ej: "PW0179B") — código alfanumérico en la parte superior derecha
+- eco: el valor del campo "# ECO." — solo números (ej: "0179")
 - tipo_unidad: tipo de vehículo (ej: "REMOLQUE", "TRAILER", "HELO SECO")
 - tipo_residuos: tipo de residuo (ej: "HIELO SECO", "RSU", "RESIDUOS")
 - bruto: solo dígitos del peso bruto en kg, sin comas ni "kg" (ej: "10440")
@@ -798,7 +798,7 @@ function nextReview(){
   document.getElementById('rmc').textContent=`Boleta ${rIdx+1} de ${results.length} — verifica y corrige si es necesario`;
   document.getElementById('rimg').src=results[rIdx].url;
   const d=results[rIdx].data;
-  const fields=['folio','fecha','hora_entrada','hora_salida','cliente','placas','eco',
+  const fields=['folio','fecha','hora_entrada','hora_salida','cliente','ruta','eco',
     'tipo_unidad','tipo_residuos','bruto','tara','neto','volumen','operador','precio'];
   fields.forEach(f=>{
     const el=document.getElementById('r_'+f);
@@ -813,7 +813,7 @@ function saveRev(){
     id:Date.now(),
     folio:rv('r_folio'),fecha:rv('r_fecha'),
     hora_entrada:rv('r_hora_entrada'),hora_salida:rv('r_hora_salida'),
-    cliente:rv('r_cliente'),placas:rv('r_placas'),eco:rv('r_eco'),
+    cliente:rv('r_cliente'),ruta:rv('r_ruta'),eco:rv('r_eco'),
     tipo_unidad:rv('r_tipo_unidad'),tipo_residuos:rv('r_tipo_residuos'),
     bruto:rv('r_bruto'),tara:rv('r_tara'),neto:rv('r_neto'),
     volumen:rv('r_volumen'),operador:rv('r_operador'),
@@ -830,7 +830,7 @@ function addEntry(){
   const g=id=>document.getElementById(id)?.value.trim()||'';
   const r={id:Date.now(),folio:g('folio'),fecha:g('fecha'),
     hora_entrada:g('hora_entrada'),hora_salida:g('hora_salida'),
-    cliente:g('cliente'),placas:g('placas'),eco:g('eco'),
+    cliente:g('cliente'),ruta:g('ruta'),eco:g('eco'),
     tipo_unidad:g('tipo_unidad'),tipo_residuos:g('tipo_residuos'),
     bruto:g('bruto'),tara:g('tara'),neto:g('neto'),volumen:g('volumen'),
     operador:g('operador'),precio:g('precio')};
@@ -842,7 +842,7 @@ function addEntryMobile(){
   const g=id=>document.getElementById(id)?.value.trim()||'';
   const r={id:Date.now(),folio:g('m_folio'),fecha:g('m_fecha'),
     hora_entrada:g('m_hora_entrada'),hora_salida:g('m_hora_salida'),
-    cliente:g('m_cliente'),placas:g('m_placas'),eco:g('m_eco'),
+    cliente:g('m_cliente'),ruta:g('m_ruta'),eco:g('m_eco'),
     tipo_unidad:g('m_tipo_unidad'),tipo_residuos:g('m_tipo_residuos'),
     bruto:g('m_bruto'),tara:g('m_tara'),neto:g('m_neto'),volumen:g('m_volumen'),
     operador:g('m_operador'),precio:g('m_precio')};
@@ -885,7 +885,7 @@ function render(){
     <td style="font-family:var(--fc)">${r.hora_entrada||'—'}</td>
     <td style="font-family:var(--fc)">${r.hora_salida||'—'}</td>
     <td class="wc"><strong>${r.cliente||'—'}</strong></td>
-    <td style="font-family:var(--fc)">${r.placas||'—'}</td>
+    <td style="font-family:var(--fc)">${r.ruta||'—'}</td>
     <td style="font-family:var(--fc)">${r.eco||'—'}</td>
     <td>${r.tipo_unidad||'—'}</td>
     <td class="wc">${r.tipo_residuos||'—'}</td>
@@ -902,14 +902,14 @@ function render(){
 // ── EXCEL ────────────────────────────────────────────────────────
 function buildWorkbook(){
   // ── HOJA 1: BASE DE DATOS ────────────────────────────────────
-  const headers=['FOLIO','FECHA','HORA ENTRADA','HORA SALIDA','CLIENTE','PLACAS','#ECO',
+  const headers=['FOLIO','FECHA','HORA ENTRADA','HORA SALIDA','CLIENTE','RUTA','#ECO',
     'TIPO UNIDAD','TIPO RESIDUOS',
     'BRUTO KG','TARA KG','NETO KG','NETO TON','VOLUMEN M3',
     'OPERADOR','PRECIO'];
   const rows=records.map(r=>{
     const neto=Number(r.neto)||0;
     return [r.folio,r.fecha,r.hora_entrada,r.hora_salida,
-      r.cliente,r.placas,r.eco,r.tipo_unidad,r.tipo_residuos,
+      r.cliente,r.ruta,r.eco,r.tipo_unidad,r.tipo_residuos,
       Number(r.bruto)||'',Number(r.tara)||'',neto||'',
       neto?+(neto/1000).toFixed(3):'',
       r.volumen,r.operador,Number(r.precio)||'',r.observaciones];
