@@ -634,7 +634,12 @@ Reglas estrictas de extracción:
 - operador: nombre del operador impreso (ej: "OSCAR STILLER")
 - observaciones: cualquier otro dato relevante no capturado
 - precio: valor numérico escrito a mano al final de la boleta, generalmente en la parte inferior izquierda (ej: "1400.07") — solo el número sin símbolo de moneda
-- cliente: IGNORAR COMPLETAMENTE el texto impreso del campo "Cliente:" aunque diga "4 CLIENTES PARTICULARES" u otro texto preimpreso. Buscar únicamente texto escrito a mano con bolígrafo en la boleta.
+- cliente: REGLAS ESTRICTAS EN ORDEN DE PRIORIDAD:
+  1. IGNORAR el texto impreso en el campo "Cliente:" (ej: "4 CLIENTES PARTICULARES") — ese texto nunca es el cliente.
+  2. IGNORAR el nombre del Operador — el operador NO es el cliente aunque aparezca escrito.
+  3. El cliente es ÚNICAMENTE el texto manuscrito con bolígrafo que NO sea el nombre del operador ni datos de la empresa.
+  4. Aplicar tabla de conversión abajo.
+  5. Si no hay texto manuscrito claro que sea el cliente → dejar vacío "".
 
   TABLA DE CONVERSIÓN OBLIGATORIA — aplica SIEMPRE sin excepción:
   | Texto manuscrito visto       | Valor en cliente |
@@ -761,7 +766,7 @@ async function runBatch(){
           await new Promise(r=>setTimeout(r,wait));
         }
         document.getElementById('progText').textContent=`Analizando ${i+1} de ${files.length}${attempt>1?' (intento '+attempt+')':''}...`;
-        const model=attempt<3?'claude-haiku-4-5-20251001':'claude-sonnet-4-20250514';
+        const model='claude-sonnet-4-20250514';
         const resp=await fetch(PROXY_URL+"/api/scan",{
           method:"POST",
           headers:{"Content-Type":"application/json","x-api-key":API_KEY,"anthropic-version":"2023-06-01"},
