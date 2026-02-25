@@ -906,18 +906,205 @@ function render(){
 
 // ── EXCEL ────────────────────────────────────────────────────────
 function buildWorkbook(){
+  // ── HOJA 1: BASE DE DATOS ────────────────────────────────────
   const headers=['FOLIO','FECHA','HORA ENTRADA','HORA SALIDA','CLIENTE','PLACAS','#ECO',
     'TIPO UNIDAD','TIPO RESIDUOS',
-    'BRUTO KG','TARA KG','NETO KG','VOLUMEN M3',
+    'BRUTO KG','TARA KG','NETO KG','NETO TON','VOLUMEN M3',
     'OPERADOR','PRECIO','OBSERVACIONES'];
-  const rows=records.map(r=>[r.folio,r.fecha,r.hora_entrada,r.hora_salida,
-    r.cliente,r.placas,r.eco,r.tipo_unidad,r.tipo_residuos,
-    Number(r.bruto)||'',Number(r.tara)||'',Number(r.neto)||'',
-    r.volumen,r.operador,Number(r.precio)||'',r.observaciones]);
+  const rows=records.map(r=>{
+    const neto=Number(r.neto)||0;
+    return [r.folio,r.fecha,r.hora_entrada,r.hora_salida,
+      r.cliente,r.placas,r.eco,r.tipo_unidad,r.tipo_residuos,
+      Number(r.bruto)||'',Number(r.tara)||'',neto||'',
+      neto?+(neto/1000).toFixed(3):'',
+      r.volumen,r.operador,Number(r.precio)||'',r.observaciones];
+  });
   const ws=XLSX.utils.aoa_to_sheet([headers,...rows]);
-  ws['!cols']=[10,12,10,10,22,10,8,14,16,10,10,10,8,16,10,24].map(w=>({wch:w}));
+  ws['!cols']=[10,12,10,10,22,10,8,14,16,10,10,10,9,9,16,10,24].map(w=>({wch:w}));
   const wb=XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb,ws,'Notas Báscula');
+  XLSX.utils.book_append_sheet(wb,ws,'Datos');
+
+  // ── HOJA 2: ANÁLISIS ─────────────────────────────────────────
+  const wa=XLSX.utils.aoa_to_sheet([[]]);
+  wa['!cols']=[28,14,14,14,14,14].map(w=>({wch:w}));
+  let row=1;
+
+  const fecha=new Date().toLocaleDateString('es-MX',{day:'2-digit',month:'long',year:'numeric'});
+  const totalViajes=records.length;
+  const totalNetoKg=records.reduce((s,r)=>s+(Number(r.neto)||0),0);
+  const totalNetoTon=+(totalNetoKg/1000).toFixed(3);
+  const totalBrutoKg=records.reduce((s,r)=>s+(Number(r.bruto)||0),0);
+  const totalPrecio=records.reduce((s,r)=>s+(Number(r.precio)||0),0);
+  const totalVolumen=records.reduce((s,r)=>s+(Number(r.volumen)||0),0);
+
+  // Helper para escribir celda con estilo
+  function sc(r,c,v,s={}){
+    const addr=XLSX.utils.encode_cell({r,c});
+    wa[addr]={v,t:typeof v==='number'?'n':'s',...(s.z?{z:s.z}:{})};
+    return addr;
+  }
+
+  // Título principal
+  sc(row-1,0,'ANÁLISIS DE NOTAS DE BÁSCULA — GEN PASA');
+  sc(row,0,`Generado: ${fecha}`);
+  row+=2;
+
+  // ─ Resumen general ─
+  sc(row-1,0,'RESUMEN GENERAL');
+  row++;
+  const resumen=[
+    ['Total de viajes',totalViajes,'viajes'],
+    ['Total neto',totalNetoKg,'kg'],
+    ['Total neto',totalNetoTon,'toneladas'],
+    ['Total bruto',+(totalBrutoKg/1000).toFixed(3),'toneladas'],
+    ['Volumen total',+totalVolumen.toFixed(2),'M³'],
+    ['Ingreso total',totalPrecio,'$'],
+    ['Promedio neto por viaje',totalViajes?+(totalNetoTon/totalViajes).toFixed(3):0,'ton/viaje'],
+    ['Promedio precio por viaje',totalViajes?+(totalPrecio/totalViajes).toFixed(2):0,'$/viaje'],
+  ];
+  resumen.forEach(([label,val,unit])=>{
+    sc(row-1,0,label);
+    sc(row-1,1,val);
+    sc(row-1,2,unit);
+    row++;
+  });
+  row++;
+
+  // ─ Por cliente ─
+  const byCliente={};
+  records.forEach(r=>{
+    const k=(r.cliente||'SIN NOMBRE').toUpperCase().trim();
+    if(!byCliente[k])byCliente[k]={viajes:0,netoKg:0,precio:0,volumen:0};
+    byCliente[k].viajes++;
+    byCliente[k].netoKg+=Number(r.neto)||0;
+    byCliente[k].precio+=Number(r.precio)||0;
+    byCliente[k].volumen+=Number(r.volumen)||0;
+  });
+  const clientesSorted=Object.entries(byCliente).sort((a,b)=>b[1].netoKg-a[1].netoKg);
+
+  sc(row-1,0,'POR CLIENTE');
+  row++;
+  sc(row-1,0,'CLIENTE');sc(row-1,1,'VIAJES');sc(row-1,2,'NETO KG');
+  sc(row-1,3,'NETO TON');sc(row-1,4,'PRECIO $');sc(row-1,5,'VOL M³');
+  row++;
+  clientesSorted.forEach(([k,v])=>{
+    sc(row-1,0,k);
+    sc(row-1,1,v.viajes);
+    sc(row-1,2,v.netoKg);
+    sc(row-1,3,+(v.netoKg/1000).toFixed(3));
+    sc(row-1,4,+v.precio.toFixed(2));
+    sc(row-1,5,+v.volumen.toFixed(2));
+    row++;
+  });
+  // Totales fila
+  sc(row-1,0,'TOTAL');
+  sc(row-1,1,totalViajes);
+  sc(row-1,2,totalNetoKg);
+  sc(row-1,3,totalNetoTon);
+  sc(row-1,4,+totalPrecio.toFixed(2));
+  sc(row-1,5,+totalVolumen.toFixed(2));
+  row+=2;
+
+  // ─ Por operador ─
+  const byOp={};
+  records.forEach(r=>{
+    const k=(r.operador||'SIN ASIGNAR').toUpperCase().trim();
+    if(!byOp[k])byOp[k]={viajes:0,netoKg:0,precio:0};
+    byOp[k].viajes++;
+    byOp[k].netoKg+=Number(r.neto)||0;
+    byOp[k].precio+=Number(r.precio)||0;
+  });
+  const opSorted=Object.entries(byOp).sort((a,b)=>b[1].viajes-a[1].viajes);
+
+  sc(row-1,0,'POR OPERADOR');
+  row++;
+  sc(row-1,0,'OPERADOR');sc(row-1,1,'VIAJES');sc(row-1,2,'NETO KG');
+  sc(row-1,3,'NETO TON');sc(row-1,4,'PRECIO $');
+  row++;
+  opSorted.forEach(([k,v])=>{
+    sc(row-1,0,k);
+    sc(row-1,1,v.viajes);
+    sc(row-1,2,v.netoKg);
+    sc(row-1,3,+(v.netoKg/1000).toFixed(3));
+    sc(row-1,4,+v.precio.toFixed(2));
+    row++;
+  });
+  row+=2;
+
+  // ─ Por tipo de residuo ─
+  const byResiduo={};
+  records.forEach(r=>{
+    const k=(r.tipo_residuos||'SIN TIPO').toUpperCase().trim();
+    if(!byResiduo[k])byResiduo[k]={viajes:0,netoKg:0};
+    byResiduo[k].viajes++;
+    byResiduo[k].netoKg+=Number(r.neto)||0;
+  });
+  const residuoSorted=Object.entries(byResiduo).sort((a,b)=>b[1].netoKg-a[1].netoKg);
+
+  sc(row-1,0,'POR TIPO DE RESIDUO');
+  row++;
+  sc(row-1,0,'TIPO RESIDUO');sc(row-1,1,'VIAJES');sc(row-1,2,'NETO KG');sc(row-1,3,'NETO TON');sc(row-1,4,'% DEL TOTAL');
+  row++;
+  residuoSorted.forEach(([k,v])=>{
+    sc(row-1,0,k);
+    sc(row-1,1,v.viajes);
+    sc(row-1,2,v.netoKg);
+    sc(row-1,3,+(v.netoKg/1000).toFixed(3));
+    sc(row-1,4,totalNetoKg?+(v.netoKg/totalNetoKg*100).toFixed(1):0);
+    row++;
+  });
+  row+=2;
+
+  // ─ Por tipo de unidad ─
+  const byUnidad={};
+  records.forEach(r=>{
+    const k=(r.tipo_unidad||'SIN TIPO').toUpperCase().trim();
+    if(!byUnidad[k])byUnidad[k]={viajes:0,netoKg:0};
+    byUnidad[k].viajes++;
+    byUnidad[k].netoKg+=Number(r.neto)||0;
+  });
+  const unidadSorted=Object.entries(byUnidad).sort((a,b)=>b[1].viajes-a[1].viajes);
+
+  sc(row-1,0,'POR TIPO DE UNIDAD');
+  row++;
+  sc(row-1,0,'TIPO UNIDAD');sc(row-1,1,'VIAJES');sc(row-1,2,'NETO KG');sc(row-1,3,'NETO TON');
+  row++;
+  unidadSorted.forEach(([k,v])=>{
+    sc(row-1,0,k);
+    sc(row-1,1,v.viajes);
+    sc(row-1,2,v.netoKg);
+    sc(row-1,3,+(v.netoKg/1000).toFixed(3));
+    row++;
+  });
+  row+=2;
+
+  // ─ Por fecha ─
+  const byFecha={};
+  records.forEach(r=>{
+    const k=r.fecha||'SIN FECHA';
+    if(!byFecha[k])byFecha[k]={viajes:0,netoKg:0,precio:0};
+    byFecha[k].viajes++;
+    byFecha[k].netoKg+=Number(r.neto)||0;
+    byFecha[k].precio+=Number(r.precio)||0;
+  });
+  const fechaSorted=Object.entries(byFecha).sort((a,b)=>a[0].localeCompare(b[0]));
+
+  sc(row-1,0,'POR FECHA');
+  row++;
+  sc(row-1,0,'FECHA');sc(row-1,1,'VIAJES');sc(row-1,2,'NETO KG');sc(row-1,3,'NETO TON');sc(row-1,4,'PRECIO $');
+  row++;
+  fechaSorted.forEach(([k,v])=>{
+    sc(row-1,0,k);
+    sc(row-1,1,v.viajes);
+    sc(row-1,2,v.netoKg);
+    sc(row-1,3,+(v.netoKg/1000).toFixed(3));
+    sc(row-1,4,+v.precio.toFixed(2));
+    row++;
+  });
+
+  wa['!ref']=XLSX.utils.encode_range({s:{r:0,c:0},e:{r:row+2,c:5}});
+  XLSX.utils.book_append_sheet(wb,wa,'Análisis');
+
   return wb;
 }
 
