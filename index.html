@@ -567,7 +567,12 @@ function showConfirm(msg,okLabel='Eliminar'){
 // ── PROMPT OCR ──────────────────────────────────────────────────
 const PROMPT=`Eres un experto en lectura de boletas de báscula del relleno sanitario GEN PASA (empresa de reciclaje en México).
 
-Analiza la imagen de esta boleta y extrae los datos con precisión. La boleta tiene este layout específico:
+PASO 1 — Cuenta cuántas boletas hay en la imagen (pueden ser 1, 2, 3 o 4 boletas organizadas en grid).
+Cada boleta tiene su propio encabezado "Boleta de Báscula" con logo GEN PASA.
+
+PASO 2 — Extrae los datos de CADA boleta por separado.
+
+La boleta tiene este layout específico:
 
 SECCIÓN SUPERIOR (encabezado impreso):
 - "FOLIO:" seguido del número (formato R##### o similar)
@@ -600,23 +605,27 @@ TEXTO MANUSCRITO (escrito a mano con bolígrafo):
 - CF: número escrito a mano precedido de "CF:"
 - Fax y otros datos de contacto pueden estar escritos a mano
 
-Devuelve ÚNICAMENTE este JSON (sin markdown, sin texto extra):
-{
-  "folio": "",
-  "fecha": "",
-  "hora_entrada": "",
-  "hora_salida": "",
-  "cliente": "",
-  "eco": "",
-  "tipo_unidad": "",
-  "tipo_residuos": "",
-  "bruto": "",
-  "tara": "",
-  "neto": "",
-  "volumen": "",
-  "operador": "",
-  "precio": ""
-}
+PASO 3 — Devuelve ÚNICAMENTE un array JSON con UN objeto por cada boleta detectada.
+Sin markdown, sin texto extra, sin explicaciones. Solo el array:
+[
+  {
+    "folio": "",
+    "fecha": "",
+    "hora_entrada": "",
+    "hora_salida": "",
+    "cliente": "",
+    "eco": "",
+    "tipo_unidad": "",
+    "tipo_residuos": "",
+    "bruto": "",
+    "tara": "",
+    "neto": "",
+    "volumen": "",
+    "operador": "",
+    "precio": ""
+  }
+]
+Si hay 4 boletas → array con 4 objetos. Si hay 2 → array con 2 objetos. Si hay 1 → array con 1 objeto.
 
 Reglas estrictas de extracción:
 - folio: solo el número/código (ej: "R82742")
@@ -741,7 +750,7 @@ function renderQ(){
     <img class="bith" src="${f.url}">
     <div class="bii">
       <div class="bin">${f.name}</div>
-      <div class="bis ${f.status}">${f.status==='pending'?'En espera':f.status==='processing'?'Analizando...':f.status==='done'?'✓ Listo':'⚠ '+(f.err||'Error')}</div>
+      <div class="bis ${f.status}">${f.status==='pending'?'En espera':f.status==='processing'?'Analizando...':f.status==='done'?'✓ '+(f.count||1)+' boleta'+(f.count>1?'s':'')+' detectada'+(f.count>1?'s':''):'⚠ '+(f.err||'Error')}</div>
     </div>
     ${f.status==='pending'?`<button class="birm" onclick="files.splice(${i},1);renderQ()">✕</button>`:''}
   </div>`).join('');
@@ -765,7 +774,7 @@ async function runBatch(){
           document.getElementById('progText').textContent=`Reintentando ${attempt}/3 — espera ${wait/1000}s...`;
           await new Promise(r=>setTimeout(r,wait));
         }
-        document.getElementById('progText').textContent=`Analizando ${i+1} de ${files.length}${attempt>1?' (intento '+attempt+')':''}...`;
+        document.getElementById('progText').textContent=`Procesando imagen ${i+1} de ${files.length}${attempt>1?' — intento '+attempt:''}...`;
         const model='claude-sonnet-4-20250514';
         const resp=await fetch(PROXY_URL+"/api/scan",{
           method:"POST",
@@ -780,8 +789,12 @@ async function runBatch(){
         if(isOverloaded){if(attempt<3)continue;throw new Error('API temporalmente no disponible. Intenta en unos minutos.');}
         if(!resp.ok||data.error)throw new Error(data.error?.message||`HTTP ${resp.status}`);
         const raw=data.content.map(b=>b.text||'').join('').replace(/```json|```/g,'').trim();
-        results.push({data:JSON.parse(raw),url:files[i].url});
-        files[i].status='done';success=true;break;
+        const parsed=JSON.parse(raw);
+        const arr=Array.isArray(parsed)?parsed:[parsed];
+        arr.forEach(d=>results.push({data:d,url:files[i].url}));
+        files[i].status='done';
+        files[i].count=arr.length;
+        success=true;break;
       }catch(e){
         if(attempt===3){
           files[i].status='error';files[i].err=e.message.substring(0,50);
@@ -794,13 +807,16 @@ async function runBatch(){
   document.getElementById('progPct').textContent='100%';
   await new Promise(r=>setTimeout(r,400));
   document.getElementById('progWrap').classList.remove('show');
-  const valid=results.filter(Boolean).length;
-  if(valid===0){
+  const boletaCount=results.filter(Boolean).length;
+  if(boletaCount===0){
     document.getElementById('bstart').disabled=false;
     toast('⚠ Sin conexión con la API. Espera un momento y reintenta.','err');
     return;
   }
-  closeScan();rIdx=0;nextReview();
+  const imgCount=files.length;
+  closeScan();rIdx=0;
+  toast(`✓ ${boletaCount} boleta${boletaCount>1?'s':''} detectada${boletaCount>1?'s':''} en ${imgCount} imagen${imgCount>1?'es':''}`,'ok');
+  nextReview();
 }
 
 // ── REVIEW ──────────────────────────────────────────────────────
