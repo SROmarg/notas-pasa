@@ -308,7 +308,7 @@ td.kg{font-family:var(--fc);font-weight:600;color:var(--g);}
       <div class="dzi">🧾</div>
       <p><strong>Clic para seleccionar</strong><br>o arrastra la imagen aquí</p>
     </div>
-    <input type="file" id="fbi" accept="image/*" capture="environment" multiple onchange="onFiles(event)">
+    <input type="file" id="fbi" accept="image/*,application/pdf" capture="environment" multiple onchange="onFiles(event)">
     <div class="dz-cam-row">
       <button class="dz-cam-btn" onclick="document.getElementById('fbi').click()">📷 Cámara</button>
       <button class="dz-file-btn" onclick="triggerFileOnly()">🗂 Archivo</button>
@@ -466,7 +466,7 @@ td.kg{font-family:var(--fc);font-weight:600;color:var(--g);}
         <span>Registros:</span>
         <strong id="rc2">0</strong>
         <span class="sep"></span>
-        <button class="s-excel" id="bex2" onclick="exportExcel()" disabled>↓ Excel</button>
+        <button class="s-excel" id="bex2" onclick="shareExcel()" disabled>↓ Excel</button>
       </div>
 
       <div class="form-toggle" id="formToggle" onclick="toggleForm()">
@@ -519,7 +519,7 @@ td.kg{font-family:var(--fc);font-weight:600;color:var(--g);}
     <div class="th2">
       <div class="ttl">Registros <span class="cb" id="rc">0</span></div>
       <div class="tacts">
-        <button class="bxl" id="bex" onclick="exportExcel()" disabled>↓ Excel</button>
+        <button class="bxl" id="bex" onclick="shareExcel()" disabled>↓ Excel</button>
         <button class="bclr" onclick="clearAll()">Limpiar</button>
       </div>
     </div>
@@ -706,7 +706,7 @@ function closeScan(){document.getElementById('scanOv').style.display='none';file
 const dz=document.getElementById('dz');
 dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('over');});
 dz.addEventListener('dragleave',()=>dz.classList.remove('over'));
-dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('over');addFiles([...e.dataTransfer.files].filter(f=>f.type.startsWith('image/')));});
+dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('over');addFiles([...e.dataTransfer.files].filter(f=>f.type.startsWith('image/')||f.type==='application/pdf'));});
 
 function onFiles(e){addFiles([...e.target.files]);e.target.value='';}
 function triggerFileOnly(){
@@ -734,10 +734,12 @@ function compressImage(file,maxPx,quality){
   });
 }
 
+function readPdf(file){return new Promise(resolve=>{const r=new FileReader();r.onload=ev=>{const b64full=ev.target.result;resolve({b64:b64full.split(',')[1],mime:'application/pdf',url:b64full,isPdf:true});};r.readAsDataURL(file);});}
+
 async function addFiles(flist){
   for(const f of flist){
-    const comp=await compressImage(f,1600,0.82);
-    files.push({name:f.name,b64:comp.b64,mime:comp.mime,url:comp.url,status:'pending'});
+    const comp=f.type==='application/pdf'?await readPdf(f):await compressImage(f,1600,0.82);
+    files.push({name:f.name,b64:comp.b64,mime:comp.mime,url:comp.url,isPdf:comp.isPdf,status:'pending'});
     renderQ();
   }
 }
@@ -747,7 +749,7 @@ function renderQ(){
   q.style.display=files.length?'flex':'none';
   document.getElementById('bstart').disabled=!files.length;
   q.innerHTML=files.map((f,i)=>`<div class="bi ${f.status}">
-    <img class="bith" src="${f.url}">
+    ${f.isPdf?`<div class="bith" style="display:flex;align-items:center;justify-content:center;background:var(--dk2);font-size:10px;font-weight:800;color:var(--g)">PDF</div>`:`<img class="bith" src="${f.url}">`}
     <div class="bii">
       <div class="bin">${f.name}</div>
       <div class="bis ${f.status}">${f.status==='pending'?'En espera':f.status==='processing'?'Analizando...':f.status==='done'?'✓ '+(f.count||1)+' boleta'+(f.count>1?'s':'')+' detectada'+(f.count>1?'s':''):'⚠ '+(f.err||'Error')}</div>
@@ -780,7 +782,7 @@ async function runBatch(){
           method:"POST",
           headers:{"Content-Type":"application/json","x-api-key":API_KEY,"anthropic-version":"2023-06-01"},
           body:JSON.stringify({model,max_tokens:1500,messages:[{role:"user",content:[
-            {type:"image",source:{type:"base64",media_type:files[i].mime,data:files[i].b64}},
+            files[i].isPdf?{type:"document",source:{type:"base64",media_type:"application/pdf",data:files[i].b64}}:{type:"image",source:{type:"base64",media_type:files[i].mime,data:files[i].b64}},
             {type:"text",text:PROMPT}
           ]}]})
         });
